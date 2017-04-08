@@ -1,9 +1,5 @@
 open Canvas;
 
-/* TODO: remove this duplication */
-let width = 800;
-let height = 600;
-
 let stars = [|
   (100, 100),
   (150, 190),
@@ -12,8 +8,8 @@ let stars = [|
   (600, 10)
 |];
 
-let draw = fun offset speed ctx runTime => {
-  let (offsetX, offsetY) = offset;
+let draw = fun ctx offset speed runTime => {
+  let {x: offsetX, y: offsetY} = offset;
   fillStyle ctx "white";
   Array.iter (fun (baseX, baseY) => {
     let timeFactor = (int_of_float runTime) / 20;

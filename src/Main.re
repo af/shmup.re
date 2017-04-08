@@ -1,13 +1,10 @@
 open ReasonJs.Dom;
-open Canvas;
+module C = Canvas;
 module StarField = StarField;
 module Ship = Ship;
 
-let width = 800;
-let height = 600;
-
 type gameState = {
-  mutable shipPosition: point,
+  mutable shipPosition: C.point,
   mutable startTime: float
 };
 let gameState = {
@@ -16,14 +13,14 @@ let gameState = {
 };
 
 let setupDraw = fun canvas => {
-  let ctx = CanvasElement.getContext canvas "2d";
+  let ctx = C.CanvasElement.getContext canvas "2d";
   let rec render = fun () => {
     let now = Js.Date.now ();
     let runTime = now -. gameState.startTime;
 
-    clearRect ctx 0 0 width height;
-    StarField.draw (0, 0) 2 ctx runTime;
-    StarField.draw (100, 200) 1 ctx runTime;
+    C.clearRect ctx 0 0 C.width C.height;
+    StarField.draw ctx {x: 0, y: 0} 2 runTime;
+    StarField.draw ctx {x: 100, y: 200} 1 runTime;
     Ship.draw ctx gameState.shipPosition;
     ReasonJs.requestAnimationFrame render;
   };

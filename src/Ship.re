@@ -1,14 +1,19 @@
-open Canvas;
+open Canvas;    /* Needed to get access to point type (?) */
+module C = Canvas;
 
 let size = 20;
 
 let draw = fun ctx {x, y} => {
-  strokeStyle ctx "white";
-  beginPath ctx;
-  moveTo ctx x (y + size / 4);
-  lineTo ctx (x + size / 2) (y + size / 2);
-  lineTo ctx x (y - size / 2);
-  lineTo ctx (x - size / 2) (y + size / 2);
-  lineTo ctx x (y + size / 4);
-  stroke ctx;
+  let noseLength = size / 2;
+  let wingLength = size / 2;
+  let tailLength = size / 4;
+
+  C.strokeStyle ctx "white";
+  C.beginPath ctx;
+  C.moveTo ctx x (y + tailLength);
+  C.lineTo ctx (x + wingLength) (y + noseLength);
+  C.lineTo ctx x (y - noseLength);
+  C.lineTo ctx (x - wingLength) (y + noseLength);
+  C.lineTo ctx x (y + tailLength);
+  C.stroke ctx;
 };
