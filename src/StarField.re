@@ -2,13 +2,14 @@ open Canvas;
 
 let stars = [|
   (100, 100),
-  (150, 190),
+  (150, 290),
+  (190, 540),
   (350, 210),
   (550, 390),
   (600, 10)
 |];
 
-let draw = fun ctx (offsetX, offsetY) speed runTime => {
+let draw = fun ctx offset::(offsetX, offsetY)=(0,0) ::speed=1 runTime => {
   fillStyle ctx "white";
   Array.iter (fun (baseX, baseY) => {
     let timeFactor = (int_of_float runTime) / 20;

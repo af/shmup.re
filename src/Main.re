@@ -19,8 +19,8 @@ let setupDraw = fun canvas => {
     let runTime = now -. gameState.startTime;
 
     C.clearRect ctx 0 0 C.width C.height;
-    StarField.draw ctx (0, 0) 2 runTime;
-    StarField.draw ctx (100, 200) 1 runTime;
+    StarField.draw ctx speed::2 runTime;
+    StarField.draw ctx offset::(100, 200) runTime;
     Ship.draw ctx gameState.shipPosition;
     ReasonJs.requestAnimationFrame render;
   };
