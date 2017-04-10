@@ -2,7 +2,6 @@ type ctx;
 
 let width = 800;
 let height = 600;
-type point = {x: int, y: int};
 
 module CanvasElement = {
   external getContext : Dom.element => string => ctx = "" [@@bs.send];

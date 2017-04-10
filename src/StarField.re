@@ -8,8 +8,7 @@ let stars = [|
   (600, 10)
 |];
 
-let draw = fun ctx offset speed runTime => {
-  let {x: offsetX, y: offsetY} = offset;
+let draw = fun ctx (offsetX, offsetY) speed runTime => {
   fillStyle ctx "white";
   Array.iter (fun (baseX, baseY) => {
     let timeFactor = (int_of_float runTime) / 20;
