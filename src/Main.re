@@ -2,8 +2,10 @@ open ReasonJs.Dom;
 module C = Canvas;
 module StarField = StarField;
 module Ship = Ship;
+module Input = Input;
 
-type gameState = {
+
+type state = {
   mutable shipPosition: (int, int),
   startTime: float
 };
@@ -27,27 +29,23 @@ let setupDraw = fun canvas => {
   let _ = ReasonJs.requestAnimationFrame render;
 };
 
-/* External hack to get at KeyboardEventRe.key */
-external eventKey : 'a => string = "key" [@@bs.get];
 
-let keyboardListener = fun evt => {
-  /*Js.log evt;*/
-  /*Js.log (eventKey evt);*/
-  EventRe.preventDefault evt;
-  let (x, y) = gameState.shipPosition;
-  gameState.shipPosition = switch (eventKey evt) {
-  | "ArrowLeft" => (x - 2, y);
-  | "ArrowRight" => (x + 2, y);
-  | "ArrowUp" => (x, y - 2);
-  | "ArrowDown" => (x, y + 2);
-  | _ => gameState.shipPosition;
+let gameLoop = fun () => {
+  let cmds = Input.sample ();
+  /* TODO: operate on more ship state than position (eg. bullet state) */
+  gameState.shipPosition = Ship.tick gameState.shipPosition cmds;
+};
+
+
+let init = fun () => {
+  let canvasEl = DocumentRe.querySelector "canvas" document;
+  switch canvasEl {
+  | Some canv => setupDraw canv
+  | None => Js.log "couldnt get canvas"
   };
-};
-DocumentRe.addEventListener "keydown" keyboardListener document;
 
-let canvasEl = DocumentRe.querySelector "canvas" document;
-switch canvasEl {
-| Some canv => setupDraw canv
-| None => Js.log "couldnt get canvas"
+  Input.bindListeners ();
+  Js.Global.setInterval gameLoop 33;
 };
-Js.log ("Hi from bucklescript!");
+
+init ();

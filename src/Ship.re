@@ -1,3 +1,4 @@
+open Input;
 module C = Canvas;
 
 let size = 20;
@@ -15,4 +16,17 @@ let draw = fun ctx (x, y) => {
   C.lineTo ctx (x - wingLength) (y + noseLength);
   C.lineTo ctx x (y + tailLength);
   C.stroke ctx;
+};
+
+/* TODO: update non-position ship state here */
+let tick = fun state cmds => {
+  List.fold_left (fun (x, y) cmd => {
+    switch cmd {
+    | ShipUp => (x, y - 1);
+    | ShipDown => (x, y + 1);
+    | ShipLeft => (x - 1, y);
+    | ShipRight => (x + 1, y);
+    | _ => (x, y);
+    };
+  }) state cmds
 };
