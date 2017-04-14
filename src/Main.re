@@ -5,12 +5,12 @@ module Input = Input;
 
 
 type state = {
-  mutable shipPosition: (int, int),
+  mutable ship: Ship.t,
   startTime: float
 };
 let gameState = {
   startTime: Js.Date.now (),
-  shipPosition: (300, 500)
+  ship: Ship.initialState
 };
 
 let setupDraw = fun canvas => {
@@ -22,7 +22,7 @@ let setupDraw = fun canvas => {
     C.clearRect ctx 0 0 C.width C.height;
     StarField.draw ctx speed::2 runTime;
     StarField.draw ctx offset::(100, 200) runTime;
-    Ship.draw ctx gameState.shipPosition;
+    Ship.draw ctx gameState.ship;
     ReasonJs.requestAnimationFrame render;
   };
   let _ = ReasonJs.requestAnimationFrame render;
@@ -32,7 +32,7 @@ let setupDraw = fun canvas => {
 let gameLoop = fun () => {
   let cmds = Input.sample ();
   /* TODO: operate on more ship state than position (eg. bullet state) */
-  gameState.shipPosition = Ship.tick gameState.shipPosition cmds;
+  gameState.ship = Ship.tick gameState.ship cmds;
 };
 
 
