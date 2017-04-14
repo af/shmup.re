@@ -1,6 +1,7 @@
 open Input;
 module C = Canvas;
 
+let maxSpeed = 7;  /* max # of pixels moved per tick */
 let size = 20;
 let noseLength = size / 2;
 let wingLength = size / 2;
@@ -20,12 +21,17 @@ let draw = fun ctx (x, y) => {
 
 /* TODO: update non-position ship state here */
 let tick = fun state cmds => {
+  /* Determine how quickly to move the ship based on a cmd's magnitude */
+  let delta = fun cmdMagnitude => {
+    min maxSpeed (cmdMagnitude / 2);
+  };
+
   List.fold_left (fun (x, y) cmd => {
     switch cmd {
-    | ShipUp => (x, y - 1);
-    | ShipDown => (x, y + 1);
-    | ShipLeft => (x - 1, y);
-    | ShipRight => (x + 1, y);
+    | ShipUp n => (x, y - (delta n));
+    | ShipDown n => (x, y + (delta n));
+    | ShipLeft n => (x - (delta n), y);
+    | ShipRight n => (x + (delta n), y);
     | _ => (x, y);
     };
   }) state cmds
