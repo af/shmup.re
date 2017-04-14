@@ -1,4 +1,4 @@
-open Canvas;
+module C = Canvas;
 
 let stars = [|
   (100, 100),
@@ -10,12 +10,12 @@ let stars = [|
 |];
 
 let draw = fun ctx offset::(offsetX, offsetY)=(0,0) ::speed=1 runTime => {
-  fillStyle ctx "white";
+  C.fillStyle ctx "white";
   Array.iter (fun (baseX, baseY) => {
     let timeFactor = (int_of_float runTime) / 20;
     let x = baseX + offsetX;
-    let y = (baseY + offsetY + speed * timeFactor) mod height;
-    let size = 2;
-    fillRect ctx x y size size;
+    let y = (baseY + offsetY + speed * timeFactor) mod C.height;
+    let starSize = 2;
+    C.fillRect ctx x y starSize starSize;
   }) stars;
 };

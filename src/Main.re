@@ -1,4 +1,3 @@
-open ReasonJs.Dom;
 module C = Canvas;
 module StarField = StarField;
 module Ship = Ship;
@@ -38,6 +37,7 @@ let gameLoop = fun () => {
 
 
 let init = fun () => {
+  open ReasonJs.Dom;
   let canvasEl = DocumentRe.querySelector "canvas" document;
   switch canvasEl {
   | Some canv => setupDraw canv

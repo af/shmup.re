@@ -1,4 +1,4 @@
-open Input;
+module Input = Input;
 module C = Canvas;
 
 let maxSpeed = 7;  /* max # of pixels moved per tick */
@@ -28,11 +28,11 @@ let tick = fun state cmds => {
 
   List.fold_left (fun (x, y) cmd => {
     switch cmd {
-    | ShipUp n => (x, y - (delta n));
-    | ShipDown n => (x, y + (delta n));
-    | ShipLeft n => (x - (delta n), y);
-    | ShipRight n => (x + (delta n), y);
-    | _ => (x, y);
+    | Input.ShipUp n => (x, y - (delta n));
+    | Input.ShipDown n => (x, y + (delta n));
+    | Input.ShipLeft n => (x - (delta n), y);
+    | Input.ShipRight n => (x + (delta n), y);
+    | Input.ShipShoot => (x, y);
     };
   }) state cmds
 };
