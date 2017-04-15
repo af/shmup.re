@@ -9,7 +9,7 @@ let withDefault = fun fallback input => {
   };
 };
 
-/* Ints represent how many ticks the key has been held down for */
+/* Float represent how many ticks the key has been held down for */
 type cmd =
 | ShipUp int
 | ShipDown int

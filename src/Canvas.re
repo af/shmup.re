@@ -1,7 +1,7 @@
 type ctx;
 
-let width = 800;
-let height = 600;
+let width = 800.;
+let height = 600.;
 
 module CanvasElement = {
   external getContext : Dom.element => string => ctx = "" [@@bs.send];
@@ -10,10 +10,10 @@ module CanvasElement = {
 external strokeStyle : ctx => string => unit = "strokeStyle" [@@bs.set];
 external fillStyle : ctx => string => unit = "fillStyle" [@@bs.set];
 
-external fillRect : ctx => int => int => int => int => unit = "fillRect" [@@bs.send];
-external clearRect : ctx => int => int => int => int => unit = "clearRect" [@@bs.send];
+external fillRect : ctx => float => float => float => float => unit = "fillRect" [@@bs.send];
+external clearRect : ctx => float => float => float => float => unit = "clearRect" [@@bs.send];
 
 external beginPath : ctx => unit = "beginPath" [@@bs.send];
-external moveTo : ctx => int => int => unit = "moveTo" [@@bs.send];
-external lineTo : ctx => int => int => unit = "lineTo" [@@bs.send];
+external moveTo : ctx => float => float => unit = "moveTo" [@@bs.send];
+external lineTo : ctx => float => float => unit = "lineTo" [@@bs.send];
 external stroke : ctx => unit = "stroke" [@@bs.send];
