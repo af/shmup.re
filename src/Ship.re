@@ -17,16 +17,28 @@ let wingWidth = size /. 2.;
 let tailLength = size /. 4.;
 let color = "white";
 
-let draw = fun ctx {position: (x, y), velocity: (vx, _)} => {
-  let w = wingWidth -. (abs_float (vx /. 2.)); /* narrower wings when moving to side ("tilting") */
+let draw = fun ctx {position: (x, y), velocity: (vx, vy)} => {
+  let w = wingWidth -. (abs_float (vx /. 3.)); /* narrower wings when moving to side ("tilting") */
   C.strokeStyle ctx color;
   C.beginPath ctx;
   C.moveTo ctx x (y +. tailLength);
   C.lineTo ctx (x +. w) (y +. noseLength);
   C.lineTo ctx x (y -. noseLength);      /* Front end of the ship */
   C.lineTo ctx (x -. w) (y +. noseLength);
-  C.lineTo ctx x (y +. tailLength);
+  C.closePath ctx;
   C.stroke ctx;
+
+  /* Draw booster if ship is moving up */
+  if (vy <= -1.5) {
+    let boosterLength = -. vy *. 2.;
+    C.beginPath ctx;
+    C.moveTo ctx x (y +. noseLength);
+    C.lineTo ctx (x +. 3.) (y +. noseLength +. 2.);
+    C.lineTo ctx x (y +. noseLength +. boosterLength);
+    C.lineTo ctx (x -. 3.) (y +. noseLength +. 2.);
+    C.closePath ctx;
+    C.stroke ctx;
+  }
 };
 
 let limitMagnitide = fun maxMag (vx, vy) => {
@@ -60,7 +72,7 @@ let tick = fun state cmds => {
   }) state cmds;
 
   let (x,y) = state.position;
-  let (vx, vy) = velocity |> applyFriction 0.8 |> limitMagnitide maxSpeed;
+  let (vx, vy) = velocity |> applyFriction 0.9 |> limitMagnitide maxSpeed;
   let position = (x +. vx, y +. vy);
   {velocity: (vx, vy), position};
 };
