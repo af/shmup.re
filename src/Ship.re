@@ -1,4 +1,5 @@
 module C = Canvas;
+module V = Vector;
 
 type t = {
   position: (float, float),
@@ -41,20 +42,6 @@ let draw = fun ctx {position: (x, y), velocity: (vx, vy)} => {
   }
 };
 
-let limitMagnitide = fun maxMag (vx, vy) => {
-  let magnitude = sqrt (vx *. vx +. vy *. vy);
-  if (magnitude > maxMag) {
-    let scale = maxMag /. magnitude;
-    (vx *. scale, vy *. scale);
-  } else {
-    (vx, vy);
-  }
-};
-
-let applyFriction = fun coeff (vx, vy) => {
-  (vx *. coeff, vy *. coeff);
-};
-
 
 /* TODO: support diagonal movement */
 let tick = fun state cmds => {
@@ -72,7 +59,8 @@ let tick = fun state cmds => {
   }) state cmds;
 
   let (x,y) = state.position;
-  let (vx, vy) = velocity |> applyFriction 0.9 |> limitMagnitide maxSpeed;
+  let applyFriction = V.scale 0.9;
+  let (vx, vy) = velocity |> applyFriction |> V.limitMagnitide maxSpeed;
   let position = (x +. vx, y +. vy);
   {velocity: (vx, vy), position};
 };
