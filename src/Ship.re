@@ -11,7 +11,8 @@ let initialState = {
   velocity: (0., 0.)
 };
 
-let maxSpeed = 6.;  /* max # of pixels moved per tick */
+let maxSpeed = 7.;  /* max # of pixels moved per tick */
+let maxThrust = 10.; /* maximum impact of holding a key down */
 let size = 20.;
 let noseLength = size /. 2.;
 let wingWidth = size /. 2.;
@@ -42,25 +43,27 @@ let draw = fun ctx {position: (x, y), velocity: (vx, vy)} => {
   }
 };
 
+let ticksToThrust = fun n => {
+  min maxThrust (float_of_int n);
+};
 
-/* TODO: support diagonal movement */
 let tick = fun state cmds => {
   let {velocity} = List.fold_left (fun state cmd => {
     module I = Input;
     let {velocity: (vx, vy)} = state;
     let newVel = switch cmd {
-    | I.ShipUp n => (vx, vy -. float_of_int n);
-    | I.ShipDown n => (vx, vy +. float_of_int n);
-    | I.ShipLeft n => (vx -. float_of_int n, vy);
-    | I.ShipRight n => (vx +. float_of_int n, vy);
+    | I.ShipUp n => (vx, vy -. ticksToThrust n);
+    | I.ShipDown n => (vx, vy +. ticksToThrust n);
+    | I.ShipLeft n => (vx -. ticksToThrust n, vy);
+    | I.ShipRight n => (vx +. ticksToThrust n, vy);
     | I.ShipShoot => (vx, vy);
     };
     {...state, velocity: newVel};
   }) state cmds;
 
-  let (x,y) = state.position;
   let applyFriction = V.scale 0.9;
   let (vx, vy) = velocity |> applyFriction |> V.limitMagnitide maxSpeed;
+  let (x,y) = state.position;
   let position = (x +. vx, y +. vy);
   {velocity: (vx, vy), position};
 };

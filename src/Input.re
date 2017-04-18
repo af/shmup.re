@@ -58,21 +58,30 @@ let bindListeners = fun () => {
 };
 
 /* Return a list of commands based on the current state of inputs */
-/* TODO: support diagonal movement */
 let sample = fun () => {
   switch currentState {
-  | {left: Some n} => currentState.left = Some (n + 1);
-  | {right: Some n} => currentState.right = Some (n + 1);
   | {up: Some n} => currentState.up = Some (n + 1);
   | {down: Some n} => currentState.down = Some (n + 1);
   | _ => ();
   };
 
   switch currentState {
-  | {left: Some n, _} => [ShipLeft n];
-  | {right: Some n, _} => [ShipRight n];
-  | {up: Some n, _} => [ShipUp n];
-  | {down: Some n, _} => [ShipDown n];
+  | {left: Some n} => currentState.left = Some (n + 1);
+  | {right: Some n} => currentState.right = Some (n + 1);
+  | _ => ();
+  };
+
+  let xCmdList = switch currentState {
+  | {left: Some n, right: None} => [ShipLeft n];
+  | {right: Some n, left: None} => [ShipRight n];
   | _ => [];
   };
+
+  let yCmdList = switch currentState {
+  | {up: Some n, down: None} => [ShipUp n];
+  | {down: Some n, up: None} => [ShipDown n];
+  | _ => [];
+  };
+
+  List.append xCmdList yCmdList;
 };
