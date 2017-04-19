@@ -1,16 +1,19 @@
 module C = Canvas;
 module StarField = StarField;
 module Ship = Ship;
+module Enemy = Enemy;
 module Input = Input;
 
 
 type state = {
   mutable ship: Ship.t,
+  mutable enemies: list Enemy.t,
   startTime: float
 };
 let gameState = {
-  startTime: Js.Date.now (),
-  ship: Ship.initialState
+  ship: Ship.initialState,
+  enemies: [Enemy.spawn ()],
+  startTime: Js.Date.now ()
 };
 
 let setupDraw = fun canvas => {
@@ -23,6 +26,7 @@ let setupDraw = fun canvas => {
     StarField.draw ctx speed::2. runTime;
     StarField.draw ctx offset::(100., 200.) runTime;
     Ship.draw ctx gameState.ship;
+    List.iter (Enemy.draw ctx) gameState.enemies;
     ReasonJs.requestAnimationFrame render;
   };
   let _ = ReasonJs.requestAnimationFrame render;
@@ -33,6 +37,7 @@ let gameLoop = fun () => {
   let cmds = Input.sample ();
   /* TODO: operate on more ship state than position (eg. bullet state) */
   gameState.ship = Ship.tick gameState.ship cmds;
+  gameState.enemies = List.map Enemy.tick gameState.enemies;
 };
 
 
