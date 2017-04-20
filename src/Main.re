@@ -12,7 +12,7 @@ type state = {
 };
 let gameState = {
   ship: Ship.initialState,
-  enemies: [Enemy.spawn ()],
+  enemies: [Enemy.spawn (100., 100.), Enemy.spawn (200., 300.), Enemy.spawn (200., 0.)],
   startTime: Js.Date.now ()
 };
 
