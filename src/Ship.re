@@ -3,14 +3,17 @@ module V = Vector;
 
 type t = {
   position: (float, float),
-  velocity: (float, float)
+  velocity: (float, float),
+  bullets: list (float, float)
 };
 
 let initialState = {
   position: (300., 500.),
-  velocity: (0., 0.)
+  velocity: (0., 0.),
+  bullets: []
 };
 
+let bulletSpeed = 18.;
 let maxSpeed = 7.;  /* max # of pixels moved per tick */
 let maxThrust = 10.; /* maximum impact of holding a key down */
 let size = 20.;
@@ -19,7 +22,14 @@ let wingWidth = size /. 2.;
 let tailLength = size /. 4.;
 let color = "white";
 
-let draw = fun ctx {position: (x, y), velocity: (vx, vy)} => {
+let drawBullets ctx {bullets} => {
+  List.iter (fun (x, y) => {
+    C.fillRect ctx x y 2. 4.;
+  }) bullets;
+};
+
+let draw = fun ctx state => {
+  let {position: (x, y), velocity: (vx, vy)} = state;
   let w = wingWidth -. (abs_float (vx /. 3.)); /* narrower wings when moving to side ("tilting") */
   C.strokeStyle ctx color;
   C.beginPath ctx;
@@ -40,7 +50,9 @@ let draw = fun ctx {position: (x, y), velocity: (vx, vy)} => {
     C.lineTo ctx (x -. 3.) (y +. noseLength +. 2.);
     C.closePath ctx;
     C.stroke ctx;
-  }
+  };
+
+  drawBullets ctx state;
 };
 
 let ticksToThrust = fun n => {
@@ -48,22 +60,23 @@ let ticksToThrust = fun n => {
 };
 
 let tick = fun state cmds => {
-  let {velocity} = List.fold_left (fun state cmd => {
+  let stateFromInputs = List.fold_left (fun state cmd => {
     module I = Input;
-    let {velocity: (vx, vy)} = state;
-    let newVel = switch cmd {
-    | I.ShipUp n => (vx, vy -. ticksToThrust n);
-    | I.ShipDown n => (vx, vy +. ticksToThrust n);
-    | I.ShipLeft n => (vx -. ticksToThrust n, vy);
-    | I.ShipRight n => (vx +. ticksToThrust n, vy);
-    | I.ShipShoot => (vx, vy);
+    let {velocity: (vx, vy), position: (x, y)} = state;
+    switch cmd {
+    | I.ShipUp n =>     {...state, velocity: (vx, vy -. ticksToThrust n)};
+    | I.ShipDown n =>   {...state, velocity: (vx, vy +. ticksToThrust n)};
+    | I.ShipLeft n =>   {...state, velocity: (vx -. ticksToThrust n, vy)};
+    | I.ShipRight n =>  {...state, velocity: (vx +. ticksToThrust n, vy)};
+    | I.ShipShoot =>    {...state, bullets: (List.append state.bullets [(x, y)])};
     };
-    {...state, velocity: newVel};
   }) state cmds;
 
+  let bullets = List.map (fun (x, y) => (x, y -. bulletSpeed)) stateFromInputs.bullets;
+
   let applyFriction = V.scale 0.9;
-  let (vx, vy) = velocity |> applyFriction |> V.limitMagnitide maxSpeed;
+  let (vx, vy) = stateFromInputs.velocity |> applyFriction |> V.limitMagnitide maxSpeed;
   let (x,y) = state.position;
   let position = (x +. vx, y +. vy);
-  {velocity: (vx, vy), position};
+  {bullets, velocity: (vx, vy), position};
 };

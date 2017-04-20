@@ -21,13 +21,15 @@ type keyState = {
   mutable left: option int,
   mutable right: option int,
   mutable up: option int,
-  mutable down: option int
+  mutable down: option int,
+  mutable space: bool
 };
 let currentState = {
   left: None,
   right: None,
   up: None,
   down: None,
+  space: false
 };
 
 let keydownListener = fun evt => {
@@ -37,6 +39,7 @@ let keydownListener = fun evt => {
   | "ArrowRight" => currentState.right = Some (withDefault 1 currentState.right);
   | "ArrowUp" => currentState.up = Some (withDefault 1 currentState.up);
   | "ArrowDown" => currentState.down = Some (withDefault 1 currentState.down);
+  | " " => currentState.space = true;
   | _ => ();
   };
 };
@@ -47,6 +50,7 @@ let keyupListener = fun evt => {
   | "ArrowRight" => currentState.right = None;
   | "ArrowUp" => currentState.up = None;
   | "ArrowDown" => currentState.down = None;
+  | " " => currentState.space = false;
   | _ => ();
   };
 };
@@ -71,6 +75,8 @@ let sample = fun () => {
   | _ => ();
   };
 
+  let spaceList = currentState.space ? [ShipShoot] : [];
+
   let xCmdList = switch currentState {
   | {left: Some n, right: None} => [ShipLeft n];
   | {right: Some n, left: None} => [ShipRight n];
@@ -83,5 +89,5 @@ let sample = fun () => {
   | _ => [];
   };
 
-  List.append xCmdList yCmdList;
+  List.concat [xCmdList, yCmdList, spaceList];
 };
