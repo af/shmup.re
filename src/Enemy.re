@@ -11,7 +11,7 @@ let rotationSpeed = 0.01;
 
 let spawn (x, y) => {
   /* FIXME: placeholder */
-  let xVel = (Random.float 1.) -. 0.5;
+  let xVel = (Js.Math.random ()) -. 0.5;
   {position: (x, y), velocity: (xVel, 1.), rotation: 0.};
 };
 

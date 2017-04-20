@@ -23,7 +23,7 @@ let setupDraw = fun canvas => {
     let runTime = now -. gameState.startTime;
 
     C.clearRect ctx 0. 0. C.width C.height;
-    StarField.draw ctx speed::2. runTime;
+    StarField.draw ctx zDepth::0.6 runTime;
     StarField.draw ctx offset::(100., 200.) runTime;
     Ship.draw ctx gameState.ship;
     List.iter (Enemy.draw ctx) gameState.enemies;
