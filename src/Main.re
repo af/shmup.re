@@ -12,7 +12,7 @@ type state = {
 };
 let gameState = {
   ship: Ship.initialState,
-  enemies: [Enemy.spawn (100., 100.), Enemy.spawn (200., 300.), Enemy.spawn (200., 0.)],
+  enemies: [],
   startTime: Js.Date.now ()
 };
 
@@ -32,12 +32,12 @@ let setupDraw = fun canvas => {
   let _ = ReasonJs.requestAnimationFrame render;
 };
 
-
 let gameLoop = fun () => {
   let cmds = Input.sample ();
-  /* TODO: operate on more ship state than position (eg. bullet state) */
   gameState.ship = Ship.tick gameState.ship cmds;
-  gameState.enemies = List.map Enemy.tick gameState.enemies;
+  gameState.enemies = List.map Enemy.tick gameState.enemies
+                      |> Enemy.cull C.width C.height
+                      |> Enemy.managePopulation gameState.startTime;
 };
 
 
