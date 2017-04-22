@@ -25,3 +25,5 @@ external closePath : ctx => unit = "closePath" [@@bs.send];
 external moveTo : ctx => float => float => unit = "moveTo" [@@bs.send];
 external lineTo : ctx => float => float => unit = "lineTo" [@@bs.send];
 external stroke : ctx => unit = "stroke" [@@bs.send];
+external fill : ctx => unit = "fill" [@@bs.send];
+external arcTo : ctx => float => float => float => float => float => unit = "arcTo" [@@bs.send];
