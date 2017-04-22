@@ -1,5 +1,6 @@
 module C = Canvas;
 module V = Vector;
+module Bullet = Bullet;
 
 type t = {
   position: (float, float),
@@ -13,7 +14,7 @@ let initialState = {
   bullets: []
 };
 
-let bulletSpeed = 18.;
+let maxBulletCount = 10;
 let maxSpeed = 7.;  /* max # of pixels moved per tick */
 let maxThrust = 10.; /* maximum impact of holding a key down */
 let size = 20.;
@@ -22,11 +23,6 @@ let wingWidth = size /. 2.;
 let tailLength = size /. 4.;
 let color = "white";
 
-let drawBullets ctx {bullets} => {
-  List.iter (fun (x, y) => {
-    C.fillRect ctx x y 2. 4.;
-  }) bullets;
-};
 
 let draw = fun ctx state => {
   let {position: (x, y), velocity: (vx, vy)} = state;
@@ -52,11 +48,17 @@ let draw = fun ctx state => {
     C.stroke ctx;
   };
 
-  drawBullets ctx state;
+  List.iter (Bullet.draw ctx) state.bullets;
 };
 
 let ticksToThrust = fun n => {
   min maxThrust (float_of_int n);
+};
+
+let tryToShoot bullets (x, y) => {
+  (List.length bullets >= maxBulletCount)
+    ? bullets
+    : List.append bullets [(x, y)];
 };
 
 let tick = fun state cmds => {
@@ -68,14 +70,17 @@ let tick = fun state cmds => {
     | I.ShipDown n =>   {...state, velocity: (vx, vy +. ticksToThrust n)};
     | I.ShipLeft n =>   {...state, velocity: (vx -. ticksToThrust n, vy)};
     | I.ShipRight n =>  {...state, velocity: (vx +. ticksToThrust n, vy)};
-    | I.ShipShoot =>    {...state, bullets: (List.append state.bullets [(x, y)])};
+    | I.ShipShoot =>    {...state, bullets: (tryToShoot state.bullets (x, y))};
     };
   }) state cmds;
 
-  let bullets = List.map (fun (x, y) => (x, y -. bulletSpeed)) stateFromInputs.bullets;
+  let bullets = List.map (Bullet.tick) stateFromInputs.bullets
+                |> List.filter Bullet.isVisible;
 
   let applyFriction = V.scale 0.9;
-  let (vx, vy) = stateFromInputs.velocity |> applyFriction |> V.limitMagnitide maxSpeed;
+  let (vx, vy) = stateFromInputs.velocity
+                 |> applyFriction
+                 |> V.limitMagnitide maxSpeed;
   let (x,y) = state.position;
   let position = (x +. vx, y +. vy);
   {bullets, velocity: (vx, vy), position};
