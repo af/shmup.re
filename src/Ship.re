@@ -61,6 +61,13 @@ let tryToShoot bullets (x, y) => {
     : List.append bullets [(x, y)];
 };
 
+let enforceBoundaries (bwidth, bheight) (x, y) => {
+  let margin = 20.;
+  let newX = x |> max margin |> min (bwidth -. margin);
+  let newY = y |> max margin |> min (bheight -. margin);
+  (newX, newY);
+};
+
 let tick = fun state cmds => {
   let stateFromInputs = List.fold_left (fun state cmd => {
     module I = Input;
@@ -82,6 +89,7 @@ let tick = fun state cmds => {
                  |> applyFriction
                  |> V.limitMagnitide maxSpeed;
   let (x,y) = state.position;
-  let position = (x +. vx, y +. vy);
+  let position = (x +. vx, y +. vy)
+                 |> enforceBoundaries (C.width, C.height);
   {bullets, velocity: (vx, vy), position};
 };

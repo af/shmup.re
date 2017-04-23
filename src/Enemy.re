@@ -31,7 +31,7 @@ let draw ctx {position: (x, y), rotation} => {
 };
 
 let cull _ height enemies => {
-  List.filter (fun {position: (_, y)} => y < height) enemies;
+  List.filter (fun {position: (_, y)} => y < (height +. size)) enemies;
 };
 
 
