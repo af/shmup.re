@@ -4,7 +4,7 @@ let width = 800.;
 let height = 600.;
 
 module CanvasElement = {
-  external getContext : Dom.element => string => ctx = "" [@@bs.send];
+  external get2dContext : Dom.element => (_ [@bs.as "2d"]) => ctx = "getContext" [@@bs.send];
   external setWidth : Dom.element => float => unit = "length" [@@bs.set];
 };
 

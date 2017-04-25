@@ -17,7 +17,7 @@ let gameState = {
 };
 
 let setupDraw = fun canvas => {
-  let ctx = C.CanvasElement.getContext canvas "2d";
+  let ctx = C.CanvasElement.get2dContext canvas;
   let rec render = fun () => {
     let now = Js.Date.now ();
     let runTime = now -. gameState.startTime;
