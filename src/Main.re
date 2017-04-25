@@ -37,7 +37,8 @@ let gameLoop = fun () => {
   gameState.ship = Ship.tick gameState.ship cmds;
   gameState.enemies = List.map Enemy.tick gameState.enemies
                       |> Enemy.cull C.width C.height
-                      |> Enemy.managePopulation gameState.startTime;
+                      |> Enemy.managePopulation gameState.startTime
+                      |> Enemy.checkBullets gameState.ship.bullets;
 };
 
 
