@@ -4,7 +4,7 @@
   an issue! */
 {
   "name" : "shmup.re",
-  "bs-dependencies": ["reason-js"],
+  "bs-dependencies": ["bs-webapi"],
   "sources": [
     {
       "dir": "src",

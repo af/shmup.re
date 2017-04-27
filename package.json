@@ -12,9 +12,9 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
-    "reason-js": "0.3.0"
+    "bs-webapi": "0.4.1"
   },
   "devDependencies": {
     "bs-platform": "1.6.0",
