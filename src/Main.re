@@ -39,6 +39,8 @@ let gameLoop = fun () => {
                       |> Enemy.cull C.width C.height
                       |> Enemy.managePopulation gameState.startTime
                       |> Enemy.checkBullets gameState.ship.bullets;
+  let isDead = Enemy.checkShip gameState.ship.position gameState.enemies;
+  (isDead === true) ? Js.log "DEAD" : ();
 };
 
 

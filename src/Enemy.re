@@ -55,16 +55,31 @@ let managePopulation startTime enemies => {
     : enemies;
 };
 
+
+/* Check collision of two squares */
+/* TODO: add w2 to give second entity a size (currently fixed at 1x1) */
+let collides (x1, y1) w1 (x2, y2) => {
+  (x2 < x1 +. w1) && (x2 > x1 -. w1) && (y2 < y1 +. w1) && (y2 > y1 -. w1);
+};
+
 let checkBullets bullets enemies => {
   List.map (fun enemy => {
     let {position: (x, y)} = enemy;
     let w = size /. 2.;
     let isDead = List.fold_left (fun acc (bx, by) => {
-      acc || ((bx < x +. w) && (bx > x -. w)) && (by < y +. w) && (by > y -. w);
+      acc || collides (x, y) w (bx, by)
     }) false bullets;
 
     isDead
       ? {...enemy, diedAt: Some (Js.Date.now ())}
       : enemy;
   }) enemies
+};
+
+/* FIXME: this simplistic collision detection treats the ship as if it's only 1px x 1px */
+let checkShip (shipX, shipY) enemies => {
+  let w = size /. 2.;
+  List.fold_left (fun acc {position: (ex, ey)} => {
+    acc || collides (ex, ey) w (shipX, shipY)
+  }) false enemies;
 }
