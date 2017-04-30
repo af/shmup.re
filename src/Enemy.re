@@ -27,14 +27,14 @@ let halfSize = size /. 2.;
  * Assumes the context has been translated so 0,0 is the enemy's position
  */
 let drawExplosion ctx deathTime now => {
-  let radius = 0.1 *. (now -. deathTime);
+  let radius = 3.0 +. 0.1 *. (now -. deathTime);
   let numParticles = 8;
   for particleIdx in 0 to numParticles {
     let theta = (float_of_int particleIdx) *. (_PI /. 4.);
-    let distance = radius *. Js.Math.sin (float_of_int particleIdx);
+    let distance = radius *. Js.Math.sin (float_of_int particleIdx +. deathTime);
     let size = 0.002 *. (deathAnimationDuration -. (now -. deathTime));
     let (x, y) = (distance *. Js.Math.sin theta, distance *. Js.Math.cos theta);
-    C.strokeRect ctx x y size size;
+    C.fillRect ctx x y size size;
   }
 };
 
@@ -44,11 +44,11 @@ let draw ctx {position: (x, y), rotation, diedAt} => {
   C.save ctx;
   C.strokeStyle ctx "white";
   C.translate ctx x y;
-  C.rotate ctx (_PI /. 4. -. rotation);
   switch diedAt {
   | Some deathTime when (now > deathTime +. deathAnimationDuration) => ();
   | Some deathTime => drawExplosion ctx deathTime now;
   | None =>
+    C.rotate ctx (_PI /. 4. -. rotation);
     C.strokeRect ctx (-1. *. halfSize) (-1. *. halfSize) size size;
     C.rotate ctx (_PI /. 4. -. rotation);
     C.strokeRect ctx (-1. *. halfSize) (-1. *. halfSize) size size;
