@@ -11,15 +11,17 @@ type gamePhase =
   | GameOver;
 
 type state = {
+  mutable phase: gamePhase,
   mutable ship: Ship.t,
   mutable enemies: list Enemy.t,
-  mutable phase: gamePhase,
+  mutable score: int,
   startTime: float
 };
 let gameState = {
   phase: TitleScreen,
   ship: Ship.initialState,
   enemies: [],
+  score: 0,
   startTime: Js.Date.now ()
 };
 
@@ -41,7 +43,9 @@ let setupDraw = fun canvas => {
     | TitleScreen =>
       C.fillText ctx "shmup.re" (C.width /. 2.) (C.height /. 2.);
       C.fillText ctx "Hit any key to start" (C.width /. 2.) (C.height /. 2. +. 60.);
-    | Level => Ship.draw ctx gameState.ship;
+    | Level =>
+      Ship.draw ctx gameState.ship;
+      C.fillText ctx (string_of_int gameState.score) (C.width /. 2.) 40.;
     | GameOver => C.fillText ctx "Game Over" (C.width /. 2.) (C.height /. 2.);
     };
 
@@ -53,11 +57,12 @@ let setupDraw = fun canvas => {
 let gameLoop = fun () => {
   /* TODO: don't update ship & collision checks if game is over */
   let cmds = Input.sample ();
+  let onEnemKilled = fun () => gameState.score = gameState.score + 1;
   gameState.ship = Ship.tick gameState.ship cmds;
   gameState.enemies = List.map Enemy.tick gameState.enemies
                       |> Enemy.cull C.width C.height
                       |> Enemy.managePopulation gameState.startTime
-                      |> Enemy.checkBullets gameState.ship.bullets;
+                      |> Enemy.checkBullets gameState.ship.bullets onEnemKilled;
   let died = Enemy.checkShip gameState.ship.position gameState.enemies;
   gameState.phase = switch (gameState.phase, died) {
   | (Level, false) => Level;

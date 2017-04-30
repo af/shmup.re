@@ -82,7 +82,7 @@ let collides (x1, y1) w1 (x2, y2) => {
   (x2 < x1 +. w1) && (x2 > x1 -. w1) && (y2 < y1 +. w1) && (y2 > y1 -. w1);
 };
 
-let checkBullets bullets enemies => {
+let checkBullets bullets onEnemKilled enemies => {
   List.map (fun enemy => {
     let {diedAt, position: (x, y)} = enemy;
     let w = size /. 2.;
@@ -91,7 +91,7 @@ let checkBullets bullets enemies => {
     }) false bullets;
 
     switch (diedAt, justDied) {
-    | (None, true) => {...enemy, diedAt: Some (Js.Date.now ())}
+    | (None, true) => onEnemKilled (); {...enemy, diedAt: Some (Js.Date.now ())}
     | (None, false) => enemy
     | (Some _, _) => enemy
     }
