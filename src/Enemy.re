@@ -7,8 +7,9 @@ type t = {
   diedAt: option float,
   rotation: float  /* radians */
 };
-let _PI = 3.14159;
+let _PI = Js.Math._PI;
 let rotationSpeed = 0.01;
+let deathAnimationDuration = 1500.;
 
 let tick state => {
   let (x, y) = state.position;
@@ -21,18 +22,37 @@ let tick state => {
 let size = 20.;
 let halfSize = size /. 2.;
 
+/*
+ * Draw enemy explosion
+ * Assumes the context has been translated so 0,0 is the enemy's position
+ */
+let drawExplosion ctx deathTime now => {
+  let radius = 0.1 *. (now -. deathTime);
+  let numParticles = 8;
+  for particleIdx in 0 to numParticles {
+    let theta = (float_of_int particleIdx) *. (_PI /. 4.);
+    let distance = radius *. Js.Math.sin (float_of_int particleIdx);
+    let size = 0.002 *. (deathAnimationDuration -. (now -. deathTime));
+    let (x, y) = (distance *. Js.Math.sin theta, distance *. Js.Math.cos theta);
+    C.strokeRect ctx x y size size;
+  }
+};
+
 let draw ctx {position: (x, y), rotation, diedAt} => {
-  let color = switch diedAt {
-  | Some _ => "red"
-  | None => "white"
-  };
+  let now = Js.Date.now ();
+
   C.save ctx;
-  C.strokeStyle ctx color;
+  C.strokeStyle ctx "white";
   C.translate ctx x y;
   C.rotate ctx (_PI /. 4. -. rotation);
-  C.strokeRect ctx (-1. *. halfSize) (-1. *. halfSize) size size;
-  C.rotate ctx (_PI /. 4. -. rotation);
-  C.strokeRect ctx (-1. *. halfSize) (-1. *. halfSize) size size;
+  switch diedAt {
+  | Some deathTime when (now > deathTime +. deathAnimationDuration) => ();
+  | Some deathTime => drawExplosion ctx deathTime now;
+  | None =>
+    C.strokeRect ctx (-1. *. halfSize) (-1. *. halfSize) size size;
+    C.rotate ctx (_PI /. 4. -. rotation);
+    C.strokeRect ctx (-1. *. halfSize) (-1. *. halfSize) size size;
+  };
   C.restore ctx;
 };
 
@@ -64,22 +84,27 @@ let collides (x1, y1) w1 (x2, y2) => {
 
 let checkBullets bullets enemies => {
   List.map (fun enemy => {
-    let {position: (x, y)} = enemy;
+    let {diedAt, position: (x, y)} = enemy;
     let w = size /. 2.;
-    let isDead = List.fold_left (fun acc (bx, by) => {
+    let justDied = List.fold_left (fun acc (bx, by) => {
       acc || collides (x, y) w (bx, by)
     }) false bullets;
 
-    isDead
-      ? {...enemy, diedAt: Some (Js.Date.now ())}
-      : enemy;
+    switch (diedAt, justDied) {
+    | (None, true) => {...enemy, diedAt: Some (Js.Date.now ())}
+    | (None, false) => enemy
+    | (Some _, _) => enemy
+    }
   }) enemies
 };
 
 /* FIXME: this simplistic collision detection treats the ship as if it's only 1px x 1px */
 let checkShip (shipX, shipY) enemies => {
   let w = size /. 2.;
-  List.fold_left (fun acc {position: (ex, ey)} => {
-    acc || collides (ex, ey) w (shipX, shipY)
+  List.fold_left (fun acc {diedAt, position: (ex, ey)} => {
+    switch diedAt {
+    | Some _ => false;
+    | None => acc || collides (ex, ey) w (shipX, shipY);
+    }
   }) false enemies;
 }
