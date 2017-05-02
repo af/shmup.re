@@ -3,6 +3,7 @@ module StarField = StarField;
 module Ship = Ship;
 module Enemy = Enemy;
 module Input = Input;
+module Ui = Ui;
 
 
 type gamePhase =
@@ -26,27 +27,23 @@ let gameState = {
 };
 
 let setupDraw = fun canvas => {
-  let ctx = C.CanvasElement.get2dContext canvas;
-  C.font ctx "40px Joystix, monospace";
-  C.textAlign ctx "center";
+  let ctx = C.CanvasElement.get2dContext canvas |> Ui.init;
 
   let rec render = fun () => {
     let now = Js.Date.now ();
-    let runTime = now -. gameState.startTime;
+    let elapsedTime = now -. gameState.startTime;
 
     C.clearRect ctx 0. 0. C.width C.height;
-    StarField.draw ctx zDepth::0.6 runTime;
-    StarField.draw ctx offset::(100., 200.) runTime;
+    StarField.draw ctx zDepth::0.6 elapsedTime;
+    StarField.draw ctx offset::(100., 200.) elapsedTime;
     List.iter (Enemy.draw ctx) gameState.enemies;
 
     switch (gameState.phase) {
-    | TitleScreen =>
-      C.fillText ctx "shmup.re" (C.width /. 2.) (C.height /. 2.);
-      C.fillText ctx "Hit any key to start" (C.width /. 2.) (C.height /. 2. +. 60.);
+    | TitleScreen => Ui.drawTitle ctx;
     | Level =>
       Ship.draw ctx gameState.ship;
-      C.fillText ctx (string_of_int gameState.score) (C.width /. 2.) 40.;
-    | GameOver => C.fillText ctx "Game Over" (C.width /. 2.) (C.height /. 2.);
+      Ui.drawScore gameState.score ctx;
+    | GameOver => Ui.drawGameOver gameState.score ctx;
     };
 
     ReasonJs.requestAnimationFrame render;
