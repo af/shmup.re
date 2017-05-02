@@ -76,18 +76,18 @@ let managePopulation startTime enemies => {
 };
 
 
-/* Check collision of two squares */
-/* TODO: add w2 to give second entity a size (currently fixed at 1x1) */
-let collides (x1, y1) w1 (x2, y2) => {
-  (x2 < x1 +. w1) && (x2 > x1 -. w1) && (y2 < y1 +. w1) && (y2 > y1 -. w1);
+/* Check collision of two circles */
+let collides (x1, y1) r1 (x2, y2) r2 => {
+  let dist = sqrt ((x1 -. x2) ** 2. +. (y1 -. y2) ** 2.);
+  dist < r1 +. r2
 };
 
 let checkBullets bullets onEnemKilled enemies => {
   List.map (fun enemy => {
     let {diedAt, position: (x, y)} = enemy;
-    let w = size /. 2.;
+    let r = size /. 2.;
     let justDied = List.fold_left (fun acc (bx, by) => {
-      acc || collides (x, y) w (bx, by)
+      acc || collides (x, y) r (bx, by) 1.
     }) false bullets;
 
     switch (diedAt, justDied) {
@@ -98,13 +98,12 @@ let checkBullets bullets onEnemKilled enemies => {
   }) enemies
 };
 
-/* FIXME: this simplistic collision detection treats the ship as if it's only 1px x 1px */
 let checkShip (shipX, shipY) enemies => {
-  let w = size /. 2.;
+  let r = size /. 2.;
   List.fold_left (fun acc {diedAt, position: (ex, ey)} => {
     switch diedAt {
     | Some _ => false;
-    | None => acc || collides (ex, ey) w (shipX, shipY);
+    | None => acc || collides (ex, ey) r (shipX, shipY) 5.;
     }
   }) false enemies;
 }
