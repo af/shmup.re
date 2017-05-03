@@ -61,17 +61,22 @@ let cull _ height enemies => {
 };
 
 
-let spawnNew (x, y) => {
-  let xVel = (Js.Math.random ()) -. 0.5;
-  {position: (x, y), velocity: (xVel, 1.), rotation: 0., diedAt: None};
+let spawnNew stage => {
+  let (x, y) = (C.width *. Js.Math.random (), -20.);
+  let xVel = (Js.Math.random ()) -. 0.4;
+  let yVel = (float_of_int stage) *. (Js.Math.random ()) +. 2.;
+  {position: (x, y), velocity: (xVel, yVel), rotation: 0., diedAt: None};
 };
 
-/* Spawn a new enemy every few ticks */
+/* Spawn a new enemy every few ticks
+ * Enemies become more numerous as the game progresses
+ */
 let managePopulation startTime enemies => {
-  let timeDelta = int_of_float (Js.Date.now () -. startTime);
-  let shouldSpawn = (timeDelta mod 20 === 0);
+  let timeSinceStart = int_of_float (Js.Date.now () -. startTime);
+  let stage = timeSinceStart / 6000;
+  let shouldSpawn = (timeSinceStart mod (max (20 - stage) 2) === 0);
   shouldSpawn
-    ? List.append enemies [spawnNew (C.width *. Js.Math.random (), -20.)]
+    ? List.append enemies [spawnNew stage]
     : enemies;
 };
 

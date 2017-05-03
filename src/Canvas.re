@@ -1,11 +1,10 @@
 type ctx;
 
-let width = 800.;
-let height = 600.;
+let width = 500.;
+let height = 700.;
 
 module CanvasElement = {
   external get2dContext : Dom.element => (_ [@bs.as "2d"]) => ctx = "getContext" [@@bs.send];
-  external setWidth : Dom.element => float => unit = "length" [@@bs.set];
 };
 
 
