@@ -42,8 +42,9 @@ let setupDraw = fun canvas => {
     | TitleScreen => Ui.drawTitle ctx;
     | Level =>
       Ship.draw ctx gameState.ship;
-      Ui.drawScore gameState.score ctx;
-    | GameOver => Ui.drawGameOver gameState.score ctx;
+      Ui.drawScores gameState.score ctx;
+    | GameOver =>
+      Ui.drawGameOver gameState.score ctx;
     };
 
     ReasonJs.requestAnimationFrame render;
