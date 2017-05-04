@@ -105,10 +105,12 @@ let checkBullets bullets onEnemKilled enemies => {
 
 let checkShip (shipX, shipY) enemies => {
   let r = size /. 2.;
-  List.fold_left (fun acc {diedAt, position: (ex, ey)} => {
-    switch diedAt {
-    | Some _ => false;
-    | None => acc || collides (ex, ey) r (shipX, shipY) 5.;
+  List.fold_left (fun shipAlreadyDead enemy => {
+    let {diedAt, position: (ex, ey)} = enemy;
+    switch (shipAlreadyDead, diedAt) {
+    | (true, _) => true;
+    | (_, Some _) => false;
+    | (_, None) => collides (ex, ey) r (shipX, shipY) 5.;
     }
   }) false enemies;
 }

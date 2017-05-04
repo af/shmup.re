@@ -52,20 +52,21 @@ let setupDraw = fun canvas => {
 };
 
 let gameLoop = fun () => {
-  /* TODO: don't update ship & collision checks if game is over */
   let cmds = Input.sample ();
+  gameState.phase = switch (gameState.phase) {
+  | Level =>
+    gameState.ship = Ship.tick gameState.ship cmds;
+    let died = Enemy.checkShip gameState.ship.position gameState.enemies;
+    died ? GameOver : Level;
+  | GameOver => GameOver;
+  | _ => TitleScreen;
+  };
+
   let onEnemKilled = fun () => gameState.score = gameState.score + 1;
-  gameState.ship = Ship.tick gameState.ship cmds;
   gameState.enemies = List.map Enemy.tick gameState.enemies
                       |> Enemy.cull C.width C.height
                       |> Enemy.managePopulation gameState.startTime
                       |> Enemy.checkBullets gameState.ship.bullets onEnemKilled;
-  let died = Enemy.checkShip gameState.ship.position gameState.enemies;
-  gameState.phase = switch (gameState.phase, died) {
-  | (Level, false) => Level;
-  | (_, true) | (GameOver, _) => GameOver;
-  | _ => TitleScreen;
-  };
 };
 
 let startOnAnyKey () => {
