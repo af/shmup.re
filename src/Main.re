@@ -53,21 +53,23 @@ let setupDraw = fun canvas => {
 };
 
 let gameLoop = fun () => {
+  let onEnemKilled = fun () => gameState.score = gameState.score + 1;
   let cmds = Input.sample ();
+
   gameState.phase = switch (gameState.phase) {
   | Level =>
+    gameState.enemies = List.map Enemy.tick gameState.enemies
+                        |> Enemy.cull C.width C.height
+                        |> Enemy.managePopulation gameState.startTime
+                        |> Enemy.checkBullets gameState.ship.bullets onEnemKilled;
     gameState.ship = Ship.tick gameState.ship cmds;
     let died = Enemy.checkShip gameState.ship.position gameState.enemies;
     died ? GameOver : Level;
-  | GameOver => GameOver;
+  | GameOver =>
+    gameState.enemies = List.map Enemy.tick gameState.enemies;
+    GameOver;
   | _ => TitleScreen;
   };
-
-  let onEnemKilled = fun () => gameState.score = gameState.score + 1;
-  gameState.enemies = List.map Enemy.tick gameState.enemies
-                      |> Enemy.cull C.width C.height
-                      |> Enemy.managePopulation gameState.startTime
-                      |> Enemy.checkBullets gameState.ship.bullets onEnemKilled;
 };
 
 let startOnAnyKey () => {
