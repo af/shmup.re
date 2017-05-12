@@ -1,4 +1,5 @@
 module C = Canvas;
+module Canvas = ReasonJs.Canvas2d;
 module V = Vector;
 
 type t = {
@@ -34,26 +35,26 @@ let drawExplosion ctx deathTime now => {
     let distance = radius *. Js.Math.sin (float_of_int particleIdx +. deathTime);
     let size = 0.002 *. (deathAnimationDuration -. (now -. deathTime));
     let (x, y) = (distance *. Js.Math.sin theta, distance *. Js.Math.cos theta);
-    C.fillRect ctx x y size size;
+    ctx |> Canvas.fillRect ::x ::y w::size h::size;
   }
 };
 
 let draw ctx {position: (x, y), rotation, diedAt} => {
   let now = Js.Date.now ();
 
-  C.save ctx;
-  C.strokeStyle ctx "white";
-  C.translate ctx x y;
+  ctx |> Canvas.save;
+  Canvas.strokeStyle ctx "white";
+  ctx |> Canvas.translate ::x ::y;
   switch diedAt {
   | Some deathTime when (now > deathTime +. deathAnimationDuration) => ();
   | Some deathTime => drawExplosion ctx deathTime now;
   | None =>
-    C.rotate ctx (_PI /. 4. -. rotation);
-    C.strokeRect ctx (-1. *. halfSize) (-1. *. halfSize) size size;
-    C.rotate ctx (_PI /. 4. -. rotation);
-    C.strokeRect ctx (-1. *. halfSize) (-1. *. halfSize) size size;
+    ctx |> Canvas.rotate (_PI /. 4. -. rotation);
+    ctx |> Canvas.strokeRect x::(-1. *. halfSize) y::(-1. *. halfSize) w::size h::size;
+    ctx |> Canvas.rotate (_PI /. 4. -. rotation);
+    ctx |> Canvas.strokeRect x::(-1. *. halfSize) y::(-1. *. halfSize) w::size h::size;
   };
-  C.restore ctx;
+  ctx |> Canvas.restore;
 };
 
 let cull _ height enemies => {

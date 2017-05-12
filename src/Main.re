@@ -1,4 +1,6 @@
+module ReasonJs = ReasonJs;
 module C = Canvas;
+module Canvas = ReasonJs.Canvas2d;
 module StarField = StarField;
 module Ship = Ship;
 module Enemy = Enemy;
@@ -27,13 +29,13 @@ let gameState = {
 };
 
 let setupDraw = fun canvas => {
-  let ctx = C.CanvasElement.get2dContext canvas |> Ui.init;
+  let ctx = ReasonJs.CanvasElement.getContext2d canvas |> Ui.init;
 
-  let rec render = fun () => {
+  let rec render = fun _ => {
     let now = Js.Date.now ();
     let elapsedTime = now -. gameState.startTime;
 
-    C.clearRect ctx 0. 0. C.width C.height;
+    Canvas.clearRect ctx x::0. y::0. w::C.width h::C.height;
     StarField.draw ctx zDepth::0.6 elapsedTime;
     StarField.draw ctx offset::(100., 200.) elapsedTime;
     List.iter (Enemy.draw ctx) gameState.enemies;

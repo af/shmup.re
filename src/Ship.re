@@ -25,27 +25,28 @@ let color = "white";
 
 
 let draw = fun ctx state => {
+  open ReasonJs.Canvas2d;
   let {position: (x, y), velocity: (vx, vy)} = state;
   let w = wingWidth -. (abs_float (vx /. 3.)); /* narrower wings when moving to side ("tilting") */
-  C.strokeStyle ctx color;
-  C.beginPath ctx;
-  C.moveTo ctx x (y +. tailLength);
-  C.lineTo ctx (x +. w) (y +. noseLength);
-  C.lineTo ctx x (y -. noseLength);      /* Front end of the ship */
-  C.lineTo ctx (x -. w) (y +. noseLength);
-  C.closePath ctx;
-  C.stroke ctx;
+  strokeStyle ctx color;
+  ctx |> beginPath;
+  ctx |> moveTo ::x y::(y +. tailLength);
+  ctx |> lineTo x::(x +. w) y::(y +. noseLength);
+  ctx |> lineTo ::x y::(y -. noseLength);      /* Front end of the ship */
+  ctx |> lineTo x::(x -. w) y::(y +. noseLength);
+  ctx |> closePath;
+  ctx |> stroke;
 
   /* Draw booster if ship is moving up */
   if (vy <= -1.5) {
     let boosterLength = -. vy *. 2.;
-    C.beginPath ctx;
-    C.moveTo ctx x (y +. noseLength);
-    C.lineTo ctx (x +. 3.) (y +. noseLength +. 2.);
-    C.lineTo ctx x (y +. noseLength +. boosterLength);
-    C.lineTo ctx (x -. 3.) (y +. noseLength +. 2.);
-    C.closePath ctx;
-    C.stroke ctx;
+    ctx |> beginPath;
+    ctx |> moveTo ::x y::(y +. noseLength);
+    ctx |> lineTo x::(x +. 3.) y::(y +. noseLength +. 2.);
+    ctx |> lineTo ::x y::(y +. noseLength +. boosterLength);
+    ctx |> lineTo x::(x -. 3.) y::(y +. noseLength +. 2.);
+    ctx |> closePath;
+    ctx |> stroke;
   };
 
   List.iter (Bullet.draw ctx) state.bullets;

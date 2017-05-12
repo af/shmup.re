@@ -1,11 +1,10 @@
-module C = Canvas;
-
 let color = "white";
 let speed = 18.;
 
 let draw ctx (x, y) => {
-  C.fillStyle ctx color;
-  C.fillRect ctx x y 2. 4.;
+  open ReasonJs.Canvas2d;
+  fillStyle ctx color;
+  ctx |> fillRect ::x ::y w::2. h::4.;
 };
 
 let tick (x, y) => {
