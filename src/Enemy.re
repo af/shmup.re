@@ -92,7 +92,7 @@ let checkBullets bullets onEnemKilled enemies => {
   List.map (fun enemy => {
     let {diedAt, position: (x, y)} = enemy;
     let r = size /. 2.;
-    let justDied = List.fold_left (fun acc (bx, by) => {
+    let justDied = List.fold_left (fun acc (bx, by, _) => {
       acc || collides (x, y) r (bx, by) 1.
     }) false bullets;
 

@@ -5,7 +5,7 @@ module Bullet = Bullet;
 type t = {
   position: (float, float),
   velocity: (float, float),
-  bullets: list (float, float)
+  bullets: list (float, float, float)
 };
 
 let initialState = {
@@ -14,7 +14,6 @@ let initialState = {
   bullets: []
 };
 
-let maxBulletCount = 10;
 let maxSpeed = 7.;  /* max # of pixels moved per tick */
 let maxThrust = 10.; /* maximum impact of holding a key down */
 let size = 20.;
@@ -56,12 +55,6 @@ let ticksToThrust = fun n => {
   min maxThrust (float_of_int n);
 };
 
-let tryToShoot bullets (x, y) => {
-  (List.length bullets >= maxBulletCount)
-    ? bullets
-    : List.append bullets [(x, y)];
-};
-
 let enforceBoundaries (bwidth, bheight) (x, y) => {
   let margin = 20.;
   let newX = x |> max margin |> min (bwidth -. margin);
@@ -78,7 +71,7 @@ let tick = fun state cmds => {
     | I.ShipDown n =>   {...state, velocity: (vx, vy +. ticksToThrust n)};
     | I.ShipLeft n =>   {...state, velocity: (vx -. ticksToThrust n, vy)};
     | I.ShipRight n =>  {...state, velocity: (vx +. ticksToThrust n, vy)};
-    | I.ShipShoot =>    {...state, bullets: (tryToShoot state.bullets (x, y))};
+    | I.ShipShoot =>    {...state, bullets: (Bullet.tryToShoot state.bullets (x, y))};
     };
   }) state cmds;
 
