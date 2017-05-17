@@ -8,6 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "bsb -make-world -w",
     "build": "webpack -w",
+    "analyze": "ANALYZE_BUNDLE=1 webpack",
     "clean": "bsb -clean-world"
   },
   "keywords": [],
@@ -18,6 +19,7 @@
   },
   "devDependencies": {
     "bs-platform": "1.6.0",
-    "webpack": "2.2.0"
+    "webpack": "2.2.0",
+    "webpack-bundle-analyzer": "2.8.1"
   }
 }
