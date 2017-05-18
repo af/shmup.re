@@ -1,4 +1,4 @@
-module C = Canvas;
+module V = Vector;
 module Canvas = ReasonJs.Canvas2d;
 
 let stars = [|
@@ -16,7 +16,7 @@ let draw = fun ctx offset::(offsetX, offsetY)=(0.,0.) ::zDepth=0.2 runTime => {
   Array.iter (fun (baseX, baseY) => {
     let speed = 0.03 *. runTime /. zDepth;
     let x = baseX +. offsetX;
-    let y = mod_float (baseY +. offsetY +. speed) C.height;
+    let y = mod_float (baseY +. offsetY +. speed) Vector.worldHeight;
     let starSize = 2.;
     ctx |> Canvas.fillRect ::x ::y w::starSize h::starSize;
   }) stars;

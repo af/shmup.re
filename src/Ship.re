@@ -1,4 +1,3 @@
-module C = Canvas;
 module V = Vector;
 module Bullet = Bullet;
 
@@ -84,6 +83,6 @@ let tick = fun state cmds => {
                  |> V.limitMagnitide maxSpeed;
   let (x,y) = state.position;
   let position = (x +. vx, y +. vy)
-                 |> enforceBoundaries (C.width, C.height);
+                 |> enforceBoundaries (V.worldWidth, V.worldHeight);
   {bullets, velocity: (vx, vy), position};
 };

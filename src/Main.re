@@ -1,5 +1,5 @@
 module ReasonJs = ReasonJs;
-module C = Canvas;
+module V = Vector;
 module Canvas = ReasonJs.Canvas2d;
 module StarField = StarField;
 module Ship = Ship;
@@ -35,7 +35,7 @@ let setupDraw = fun canvas => {
     let now = Js.Date.now ();
     let elapsedTime = now -. gameState.startTime;
 
-    Canvas.clearRect ctx x::0. y::0. w::C.width h::C.height;
+    Canvas.clearRect ctx x::0. y::0. w::V.worldWidth h::V.worldHeight;
     StarField.draw ctx zDepth::0.6 elapsedTime;
     StarField.draw ctx offset::(100., 200.) elapsedTime;
     List.iter (Enemy.draw ctx) gameState.enemies;
@@ -61,7 +61,7 @@ let gameLoop = fun () => {
   gameState.phase = switch (gameState.phase) {
   | Level =>
     gameState.enemies = List.map Enemy.tick gameState.enemies
-                        |> Enemy.cull C.width C.height
+                        |> Enemy.cull V.worldWidth V.worldHeight
                         |> Enemy.managePopulation gameState.startTime
                         |> Enemy.checkBullets gameState.ship.bullets onEnemKilled;
     gameState.ship = Ship.tick gameState.ship cmds;

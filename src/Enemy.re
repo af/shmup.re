@@ -1,4 +1,3 @@
-module C = Canvas;
 module Canvas = ReasonJs.Canvas2d;
 module V = Vector;
 
@@ -63,7 +62,7 @@ let cull _ height enemies => {
 
 
 let spawnNew stage => {
-  let (x, y) = (C.width *. Js.Math.random (), -20.);
+  let (x, y) = (V.worldWidth *. Js.Math.random (), -20.);
   let xVel = (Js.Math.random ()) -. 0.4;
   let yVel = (float_of_int stage) *. (Js.Math.random ()) +. 2.;
   {position: (x, y), velocity: (xVel, yVel), rotation: 0., diedAt: None};
