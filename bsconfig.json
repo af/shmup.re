@@ -5,6 +5,7 @@
 {
   "name" : "shmup.re",
   "bs-dependencies": ["bs-webapi"],
+  "package-specs": ["es6"],
   "sources": [
     {
       "dir": "src",
