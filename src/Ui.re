@@ -16,8 +16,8 @@ let drawTitle ctx => {
   font ctx "40px Joystix, monospace";
   ctx |> fillText "shmup.re" x::halfWidth y::halfHeight;
   font ctx "20px Joystix, monospace";
-  ctx |> fillText "Use arrow and space keys" x::halfWidth y::(halfHeight +. 40.);
-  ctx |> fillText "Hit any key to start" x::halfWidth y::(halfHeight +. 80.);
+  ctx |> fillText "A retro shooter in ReasonML" x::halfWidth y::(halfHeight +. 40.);
+  ctx |> fillText "Use the arrow and space keys" x::halfWidth y::(halfHeight +. 80.);
 };
 
 let drawScores score ::hi=0 ctx => {

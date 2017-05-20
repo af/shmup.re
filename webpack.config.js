@@ -8,7 +8,7 @@ module.exports = {
     main: './lib/es6/src/main.js',
   },
   output: {
-    path: path.join(__dirname, 'lib/bundle'),
+    path: path.join(__dirname, 'dist'),
     filename: '[name].js',
   },
 
