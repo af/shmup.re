@@ -1,7 +1,7 @@
 let color = "white";
 let speed = 18.;
 let maxCount = 15;
-let angleRange = Js.Math._PI /. 20.;
+let angleRange = Js.Math._PI /. 32.;
 
 
 let draw ctx (x, y, _) => {

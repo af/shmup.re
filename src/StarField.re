@@ -12,6 +12,7 @@ let stars = [|
 
 /* 0 < zDepth < 1, with a higher value representing a larger distance from the ship */
 let draw = fun ctx offset::(offsetX, offsetY)=(0.,0.) ::zDepth=0.2 runTime => {
+  Canvas.save ctx;
   Canvas.fillStyle ctx ("rgba(255,255,255," ^ (string_of_float (1.0 -. zDepth)) ^ ")");
   Array.iter (fun (baseX, baseY) => {
     let speed = 0.03 *. runTime /. zDepth;
@@ -20,4 +21,5 @@ let draw = fun ctx offset::(offsetX, offsetY)=(0.,0.) ::zDepth=0.2 runTime => {
     let starSize = 2.;
     ctx |> Canvas.fillRect ::x ::y w::starSize h::starSize;
   }) stars;
+  Canvas.restore ctx;
 };

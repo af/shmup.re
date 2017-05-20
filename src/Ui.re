@@ -5,8 +5,10 @@ module HiScore = HiScore;
 let (width, height) = (V.worldWidth, V.worldHeight);
 let (halfWidth, halfHeight) = (width /. 2., height /. 2.);
 let initialHiScore = HiScore.get ();
+let color = "white";
 
 let init ctx => {
+  fillStyle ctx "white";
   font ctx "28px Joystix, monospace";
   textAlign ctx "center";
   ctx;
