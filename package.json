@@ -10,7 +10,7 @@
     "build": "webpack -w",
     "analyze": "ANALYZE_BUNDLE=1 webpack",
     "clean": "bsb -clean-world",
-    "prepush": "NODE_ENV=production webpack -p && git add dist && git ci -m 'Update dist/main.js'"
+    "precommit": "NODE_ENV=production webpack -p && git add dist"
   },
   "keywords": [],
   "author": "",
