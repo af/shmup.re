@@ -1,16 +1,17 @@
 {
   "name": "shmup.re",
-  "private": true,
-  "version": "0.0.0",
-  "description": "",
+  "private": false,
+  "version": "0.1.0",
+  "description": "A space shooter built with ReasonML",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "bsb -clean-world -make-world -w 2>&1 | berror --path-to-refmttype refmttype",
     "build": "webpack -w",
+    "build-dist": "NODE_ENV=production webpack -p --hide-modules",
     "analyze": "ANALYZE_BUNDLE=1 webpack",
     "clean": "bsb -clean-world",
-    "precommit": "NODE_ENV=production webpack -p && git add dist"
+    "precommit": "npm run build-dist && git add dist"
   },
   "keywords": [],
   "author": "",
