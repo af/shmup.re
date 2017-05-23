@@ -2,7 +2,7 @@
 
 In which I attempt to learn [ReasonML](https://facebook.github.io/reason) by making a simple canvas game. [Play it online](http://aaronfranks/shmup.re)
 
-[![screenshot](./screenshot.png)](http://aaronfranks.com/shmup.re)
+[![screenshot](./assets/screenshot.png)](http://aaronfranks.com/shmup.re)
 
 Admittedly, some of this code is pretty gnarly (it's my first Reason/Ocaml program). Feedback and
 pull requests are welcome!
