@@ -1,6 +1,6 @@
 # shmup.re
 
-In which I attempt to learn [ReasonML](https://facebook.github.io/reason) by making a simple canvas game. [Play it online](http://aaronfranks/shmup.re)
+In which I attempt to learn [ReasonML](https://facebook.github.io/reason) by making a simple canvas game. [Play it online](http://aaronfranks.com/shmup.re)
 
 [![screenshot](./assets/screenshot.png)](http://aaronfranks.com/shmup.re)
 
