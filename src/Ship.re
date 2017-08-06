@@ -22,7 +22,7 @@ let tailLength = size /. 4.;
 let color = "white";
 
 
-let draw = fun ctx state => {
+let draw ctx state => {
   open ReasonJs.Canvas2d;
   let {position: (x, y), velocity: (vx, vy)} = state;
   let w = wingWidth -. (abs_float (vx /. 3.)); /* narrower wings when moving to side ("tilting") */
@@ -50,7 +50,7 @@ let draw = fun ctx state => {
   List.iter (Bullet.draw ctx) state.bullets;
 };
 
-let ticksToThrust = fun n => {
+let ticksToThrust n => {
   min maxThrust (float_of_int n);
 };
 
@@ -61,7 +61,7 @@ let enforceBoundaries (bwidth, bheight) (x, y) => {
   (newX, newY);
 };
 
-let tick = fun state cmds => {
+let tick state cmds => {
   let stateFromInputs = List.fold_left (fun state cmd => {
     module I = Input;
     let {velocity: (vx, vy), position: (x, y)} = state;

@@ -19,7 +19,7 @@ let drawTitle ctx => {
   ctx |> fillText "shmup.re" x::halfWidth y::halfHeight;
   font ctx "20px Joystix, monospace";
   ctx |> fillText "A retro shooter in ReasonML" x::halfWidth y::(halfHeight +. 40.);
-  ctx |> fillText "Use the arrow and space keys" x::halfWidth y::(halfHeight +. 80.);
+  ctx |> fillText "Use the arrow and space keys" x::halfWidth y::(halfHeight +. 80.)
 };
 
 let drawScores score ::hi=0 ctx => {
@@ -27,11 +27,11 @@ let drawScores score ::hi=0 ctx => {
   textAlign ctx "right";
   ctx |> fillText ("hi:" ^ string_of_int hiScore) x::(width -. 20.) y::40.;
   textAlign ctx "center";
-  ctx |> fillText (string_of_int score) x::halfWidth y::40.;
+  ctx |> fillText (string_of_int score) x::halfWidth y::40.
 };
 
 let drawGameOver score ctx => {
   HiScore.set score;
   drawScores score hi::score ctx;
-  ctx |> fillText "Game Over" x::halfWidth y::halfHeight;
-}
+  ctx |> fillText "Game Over" x::halfWidth y::halfHeight
+};

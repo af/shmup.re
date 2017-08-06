@@ -7,12 +7,10 @@ let get () => {
   switch score {
   | Some x => int_of_string x
   | None => 0
-  };
+  }
 };
 
 let set score => {
   let currentHi = get ();
-  (score > currentHi)
-    ? localStorage |> setItem _KEY (string_of_int score)
-    : ();
-}
+  score > currentHi ? localStorage |> setItem _KEY (string_of_int score) : ()
+};

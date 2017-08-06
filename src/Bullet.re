@@ -7,7 +7,7 @@ let angleRange = Js.Math._PI /. 32.;
 let draw ctx (x, y, _) => {
   open ReasonJs.Canvas2d;
   fillStyle ctx color;
-  ctx |> fillRect ::x ::y w::2. h::4.;
+  ctx |> fillRect ::x ::y w::2. h::4.
 };
 
 let tick (x, y, angle) => {
