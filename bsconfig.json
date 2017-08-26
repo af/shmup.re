@@ -5,6 +5,7 @@
 {
   "name" : "shmup.re",
   "bs-dependencies": ["bs-webapi"],
+  "bsc-flags": ["-bs-super-errors"],
   "package-specs": ["es6"],
   "sources": [
     {
