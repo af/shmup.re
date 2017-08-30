@@ -1,18 +1,10 @@
-/*t color = "white";
-  let speed = 18.;
-  let maxCo*/
-external eventKey : 'a => string =
-  "key" [@@bs.get]; /*tx (x, y, _) => {
-  open ReasonJs.Canvas2d;
-  fil*/
+external eventKey : 'a => string = "key" [@@bs.get];
 
 let withDefault fallback input =>
   switch input {
   | None => fallback
   | Some x => x
-  }; /*Math.sin angle;
-  let dy = speed *. Js.Math.cos angle;
-  (x +.*/
+  };
 
 type cmd =
   | ShipUp int
@@ -57,9 +49,7 @@ let bindListeners () => {
   open ReasonJs.Dom;
   DocumentRe.addEventListener "keydown" (fun evt => keydownListener evt) document;
   DocumentRe.addEventListener "keyup" (fun evt => keyupListener evt) document
-}; /*elocity;
-  let position = (x +. vx, y +. vy);
-  let rotation = s*/
+};
 
 let sample () => {
   switch currentState {
