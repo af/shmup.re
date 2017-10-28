@@ -1,42 +1,42 @@
-external eventKey : 'a => string = "key" [@@bs.get];
+[@bs.get] external eventKey : 'a => string = "key";
 
-let withDefault fallback input =>
+let withDefault = (fallback, input) =>
   switch input {
   | None => fallback
-  | Some x => x
+  | Some(x) => x
   };
 
 type cmd =
-  | ShipUp int
-  | ShipDown int
-  | ShipLeft int
-  | ShipRight int
+  | ShipUp(int)
+  | ShipDown(int)
+  | ShipLeft(int)
+  | ShipRight(int)
   | ShipShoot;
 
 type keyState = {
-  mutable left: option int,
-  mutable right: option int,
-  mutable up: option int,
-  mutable down: option int,
+  mutable left: option(int),
+  mutable right: option(int),
+  mutable up: option(int),
+  mutable down: option(int),
   mutable space: bool
 };
 
 let currentState = {left: None, right: None, up: None, down: None, space: false};
 
-let keydownListener evt => {
-  EventRe.preventDefault evt;
-  switch (eventKey evt) {
-  | "ArrowLeft" => currentState.left = Some (withDefault 1 currentState.left)
-  | "ArrowRight" => currentState.right = Some (withDefault 1 currentState.right)
-  | "ArrowUp" => currentState.up = Some (withDefault 1 currentState.up)
-  | "ArrowDown" => currentState.down = Some (withDefault 1 currentState.down)
+let keydownListener = (evt) => {
+  EventRe.preventDefault(evt);
+  switch (eventKey(evt)) {
+  | "ArrowLeft" => currentState.left = Some(withDefault(1, currentState.left))
+  | "ArrowRight" => currentState.right = Some(withDefault(1, currentState.right))
+  | "ArrowUp" => currentState.up = Some(withDefault(1, currentState.up))
+  | "ArrowDown" => currentState.down = Some(withDefault(1, currentState.down))
   | " " => currentState.space = true
   | _ => ()
   }
 };
 
-let keyupListener evt =>
-  switch (eventKey evt) {
+let keyupListener = (evt) =>
+  switch (eventKey(evt)) {
   | "ArrowLeft" => currentState.left = None
   | "ArrowRight" => currentState.right = None
   | "ArrowUp" => currentState.up = None
@@ -45,35 +45,35 @@ let keyupListener evt =>
   | _ => ()
   };
 
-let bindListeners () => {
+let bindListeners = () => {
   open ReasonJs.Dom;
-  DocumentRe.addEventListener "keydown" (fun evt => keydownListener evt) document;
-  DocumentRe.addEventListener "keyup" (fun evt => keyupListener evt) document
+  DocumentRe.addEventListener("keydown", (evt) => keydownListener(evt), document);
+  DocumentRe.addEventListener("keyup", (evt) => keyupListener(evt), document)
 };
 
-let sample () => {
+let sample = () => {
   switch currentState {
-  | {up: Some n} => currentState.up = Some (n + 1)
-  | {down: Some n} => currentState.down = Some (n + 1)
+  | {up: Some(n)} => currentState.up = Some(n + 1)
+  | {down: Some(n)} => currentState.down = Some(n + 1)
   | _ => ()
   };
   switch currentState {
-  | {left: Some n} => currentState.left = Some (n + 1)
-  | {right: Some n} => currentState.right = Some (n + 1)
+  | {left: Some(n)} => currentState.left = Some(n + 1)
+  | {right: Some(n)} => currentState.right = Some(n + 1)
   | _ => ()
   };
   let spaceList = currentState.space ? [ShipShoot] : [];
   let xCmdList =
     switch currentState {
-    | {left: Some n, right: None} => [ShipLeft n]
-    | {right: Some n, left: None} => [ShipRight n]
+    | {left: Some(n), right: None} => [ShipLeft(n)]
+    | {right: Some(n), left: None} => [ShipRight(n)]
     | _ => []
     };
   let yCmdList =
     switch currentState {
-    | {up: Some n, down: None} => [ShipUp n]
-    | {down: Some n, up: None} => [ShipDown n]
+    | {up: Some(n), down: None} => [ShipUp(n)]
+    | {down: Some(n), up: None} => [ShipDown(n)]
     | _ => []
     };
-  List.concat [xCmdList, yCmdList, spaceList]
+  List.concat([xCmdList, yCmdList, spaceList])
 };
